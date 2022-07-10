@@ -21,14 +21,13 @@ WORKDIR /opt/app
 RUN autoreconf -fiv
 RUN ./configure
 RUN make
-RUN make install
 
 FROM base
-COPY --from=build /usr/local/bin/motionplus /usr/local/bin/motionplus
-COPY --from=build /usr/local/share/doc/motionplus /usr/local/share/doc/motionplus
-COPY --from=build /usr/local/etc/motionplus /usr/local/etc/motionplus
-
+COPY --from=build /opt/app/src/motionplus /usr/local/bin/motionplus
+VOLUME ["/motionplus", "/storage"]
 RUN useradd --system motionplus
 USER motionplus
-
-# TODO CMD
+EXPOSE 8580
+EXPOSE 8581
+ENTRYPOINT ["motionplus"]
+CMD ["-n", "-c", "/motionplus/motionplus.conf"]
